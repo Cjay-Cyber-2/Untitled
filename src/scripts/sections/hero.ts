@@ -3,6 +3,8 @@ import { Actor, rel, relRect } from '../actor';
 import { rng, layer, stroke, hlD, draw } from '../sketch';
 import { prepType, typeIn } from '../type';
 
+// Set once the intro has run in this page load, so a window resize rebuild
+// doesn't replay it. It resets on every visit or reload.
 let played = false;
 
 export function hero() {
@@ -123,7 +125,6 @@ export function hero() {
 
     function done() {
       document.documentElement.classList.remove('is-intro');
-      try { sessionStorage.setItem('untitled-intro', '1'); } catch {}
       unbind();
     }
     const hurry = () => {
@@ -139,10 +140,7 @@ export function hero() {
     };
     skip.addEventListener('click', hurry);
 
-    let seen = played;
-    try { seen = seen || sessionStorage.getItem('untitled-intro') === '1'; } catch {}
-
-    if (seen || window.scrollY > 40) {
+    if (played || window.scrollY > 40) {
       tl.progress(1);
     } else {
       document.documentElement.classList.add('is-intro');
