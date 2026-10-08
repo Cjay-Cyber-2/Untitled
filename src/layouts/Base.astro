@@ -8,7 +8,7 @@ interface Props { title?: string; description?: string; home?: boolean }
 const { title = `${site.name} · six builders, building in public`, description = site.description, home = false } = Astro.props;
 ---
 <!doctype html>
-<html lang="en">
+<html lang="en" data-home={home ? "" : undefined}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
@@ -45,6 +45,11 @@ const { title = `${site.name} · six builders, building in public`, description 
 <style is:global>
   .wipe-in .wipe { transform: scaleY(1); }
   .skip:focus { position: fixed !important; left: 16px; top: 16px; width: auto; height: auto; clip: auto; z-index: 200; padding: 10px 14px; background: var(--lime); border: 1.5px solid var(--burgundy); border-radius: 8px; }
-  .js [data-type]:not(.prepped) { visibility: hidden; animation: show-late 0s 2.5s forwards; }
+  .js [data-type]:not(.prepped) { visibility: hidden; animation: show-late 0s 6s forwards; }
+  /* homepage: everything the intro builds stays hidden until the intro is ready to start
+     (safety net: shown anyway after 6s if scripts never load) */
+  html[data-home].js:not(.hero-ready) :is(.hero [data-in], .hero [data-cta], .hero [data-type], .hero .cmt, .tb-av, .tb-count) {
+    visibility: hidden; animation: show-late 0s 6s forwards;
+  }
   @keyframes show-late { to { visibility: visible; } }
 </style>

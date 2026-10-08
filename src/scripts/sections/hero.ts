@@ -12,7 +12,9 @@ export function hero() {
   if (!section) return;
   const stage = section.querySelector<HTMLElement>('[data-stage]')!;
   const word = section.querySelector<HTMLElement>('[data-type]')!;
+  const ready = () => document.documentElement.classList.add('hero-ready');
   if (reduced) {
+    ready();
     word.classList.add('prepped');
     section.querySelectorAll<HTMLElement>('.cmt').forEach((c) => (c.style.opacity = '1'));
     return;
@@ -142,7 +144,9 @@ export function hero() {
 
     if (played || window.scrollY > 40) {
       tl.progress(1);
+      ready();
     } else {
+      ready();
       document.documentElement.classList.add('is-intro');
       window.addEventListener('wheel', hurry, { passive: true });
       window.addEventListener('touchmove', hurry, { passive: true });
