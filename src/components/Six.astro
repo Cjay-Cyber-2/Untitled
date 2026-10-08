@@ -1,0 +1,134 @@
+---
+import { members, fullName } from '../data/site';
+import Cursor from './Cursor.astro';
+import Portrait from './Portrait.astro';
+import Icon from './Icon.astro';
+---
+<section class="six" id="six" data-six>
+  <div class="wrap sec-head">
+    <p class="eyebrow mono" style="--c:var(--apricot)">02 · The six</p>
+    <h2 class="sec-title">Six people.<br />Six colours.<br />One group chat.</h2>
+    <p class="hand sec-note">the group chat is chaos ↓</p>
+  </div>
+
+  <div class="six-stage" data-stage>
+    <div class="six-deck">
+      {members.map((m, i) => (
+        <article class="mcard" data-card style={`--c:var(--${m.color});--i:${i}`} aria-labelledby={`m-${m.slug}`}>
+          <div class="mcard-flood" data-flood></div>
+          <div class="mcard-grid">
+            <div class="mcard-photo-slot" data-slot>
+              <div class="mcard-photo" data-photo>
+                <Portrait m={m} />
+              </div>
+            </div>
+            <div class="mcard-info">
+              <p class="mono mcard-no" data-bit>No. 0{i + 1} · {m.campus}</p>
+              <h3 class="mcard-name" id={`m-${m.slug}`}><span data-type>{m.first}</span></h3>
+              <p class="mcard-role" data-bit>{m.role} · <span class="mcard-last">{fullName(m)}</span></p>
+              <p class="mcard-line serif" data-bit>“{m.oneLiner}”</p>
+              <dl class="mcard-facts" data-bit>
+                <div><dt class="mono">Made of</dt><dd>{m.madeOf.map((x) => <span class="chip">{x}</span>)}</dd></div>
+                <div><dt class="mono">Status</dt><dd>{m.status}</dd></div>
+                <div class="mcard-err"><dt class="mono">Error</dt><dd><code>{m.error}</code></dd></div>
+              </dl>
+              <p class="mcard-fact" data-fact><span class="hand">fun fact:</span> {m.fact}</p>
+              <div class="mcard-links" data-bit>
+                <a class="btn" href={`/members/${m.slug}`} data-wipe={`var(--${m.color})`} data-cursor={`${m.first}'s page`}>Open {m.first}’s page <Icon name="arrow" /></a>
+                <div class="mcard-socials">
+                  {Object.entries(m.socials).slice(0, 4).map(([k, url]) => (
+                    <a href={url} target="_blank" rel="noopener" aria-label={`${m.first} on ${k}`} data-cursor={k}><Icon name={k} /></a>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="cur-layer"><Cursor who={m.slug} /></div>
+        </article>
+      ))}
+    </div>
+    <ol class="six-index" aria-hidden="true">
+      {members.map((m) => <li style={`--c:var(--${m.color})`} data-dot><span>{m.first}</span></li>)}
+    </ol>
+  </div>
+</section>
+
+<style is:global>
+  .six-stage { position: relative; }
+  .six-deck { display: grid; gap: 28px; padding-inline: var(--gutter); }
+  .mcard {
+    position: relative; isolation: isolate;
+    width: min(1240px, 100%); margin-inline: auto;
+    border: 1.5px solid var(--burgundy); border-radius: calc(var(--radius) + 6px);
+    background: var(--paper);
+    box-shadow: 6px 6px 0 var(--burgundy);
+  }
+  .mcard-flood { position: absolute; inset: 0; z-index: -1; border-radius: inherit; background: var(--c); }
+  .mcard-grid { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: clamp(20px, 3vw, 48px); padding: clamp(16px, 2vw, 28px); }
+  .mcard-photo-slot { position: relative; aspect-ratio: 4 / 5; max-height: 100%; }
+  .mcard-photo { position: absolute; inset: 0; border: 1.5px solid var(--burgundy); border-radius: var(--radius); overflow: hidden; background: var(--paper); }
+  .mcard-info { display: flex; flex-direction: column; gap: clamp(10px, 1.3vw, 18px); min-width: 0; padding-block: 8px; }
+  .mcard-name {
+    font-weight: 900; font-stretch: 120%; text-transform: uppercase;
+    font-size: clamp(56px, 8.6vw, 148px); line-height: 0.82; letter-spacing: -0.03em;
+    --caret: var(--burgundy);
+  }
+  .mcard-role { font-weight: 700; font-size: clamp(17px, 1.5vw, 21px); }
+  .mcard-last { font-weight: 400; color: var(--wine); }
+  .mcard-line { font-size: clamp(22px, 2.3vw, 34px); line-height: 1.12; max-width: 22ch; }
+  .mcard-facts { display: grid; gap: 10px; }
+  .mcard-facts > div { display: grid; grid-template-columns: 76px 1fr; gap: 12px; align-items: baseline; }
+  .mcard-facts dt { color: var(--wine); font-size: 11px; }
+  .mcard-facts dd { display: flex; flex-wrap: wrap; gap: 6px; font-size: 16px; }
+  .mcard-facts code { font-family: var(--f-mono); font-size: 14px; padding: 2px 8px; border-radius: 6px; background: var(--paper); border: 1.5px dashed var(--burgundy); }
+  .mcard-fact { position: relative; font-size: 16px; line-height: 1.4; max-width: 44ch; padding: 6px 2px; }
+  .mcard-fact .hand { font-size: 24px; margin-right: 4px; }
+  .mcard-links { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-top: auto; }
+  .mcard-socials { display: flex; gap: 8px; }
+  .mcard-socials a {
+    width: 42px; height: 42px; display: grid; place-items: center; border-radius: 50%;
+    border: 1.5px solid var(--burgundy); background: var(--paper);
+    transition: translate 0.25s var(--ease-out), rotate 0.25s var(--ease-out), background-color 0.2s;
+  }
+  .mcard-socials a:hover { translate: 0 -3px; rotate: -6deg; background: var(--burgundy); color: var(--paper); }
+  .mcard-socials svg { width: 18px; height: 18px; }
+  .six-index { display: none; }
+
+  /* pinned deck (JS) */
+  .six.is-pinned .six-stage { height: 100svh; }
+  .six.is-pinned .six-deck { display: block; position: absolute; inset: calc(var(--bar-h) + 20px) var(--gutter) 56px; padding: 0; }
+  .six.is-pinned .mcard { position: absolute; inset: 0; height: 100%; }
+  .six.is-pinned .mcard-grid { height: 100%; }
+  .six.is-pinned .mcard-photo-slot { aspect-ratio: auto; height: 100%; }
+  .six.is-pinned .six-index {
+    display: flex; gap: 6px; position: absolute; left: 50%; bottom: 16px; transform: translateX(-50%);
+  }
+  .six-index li {
+    width: 12px; height: 12px; border-radius: 99px; border: 1.5px solid var(--burgundy); background: var(--paper);
+    transition: width 0.4s var(--ease-out), background-color 0.3s;
+    overflow: hidden; display: grid; place-items: center;
+  }
+  .six-index li span { font-family: var(--f-mono); font-size: 10px; opacity: 0; white-space: nowrap; }
+  .six-index li.is-on { width: 64px; background: var(--c); }
+  .six-index li.is-on span { opacity: 1; }
+
+  @media (max-width: 860px) {
+    .mcard-grid { grid-template-columns: 1fr; }
+    .mcard-photo-slot { aspect-ratio: 4 / 3; }
+    .six.is-pinned .mcard-grid { grid-template-rows: 34% 1fr; gap: 14px; }
+    .six.is-pinned .mcard-photo-slot { height: auto; }
+    .mcard-name { font-size: clamp(48px, 15vw, 88px); }
+    .mcard-line { font-size: 21px; }
+    .mcard-facts > .mcard-err, .mcard-facts > div:nth-child(2) { display: none; }
+    .mcard-links { flex-wrap: nowrap; gap: 10px; }
+    .mcard-socials { gap: 6px; }
+    .mcard-socials a:nth-child(n + 3) { display: none; }
+    .mcard-fact { font-size: 15px; }
+    .mcard-links .btn { padding: 12px 16px 11px; font-size: 14px; }
+    .mcard-socials a { width: 36px; height: 36px; }
+    .mcard-socials svg { width: 15px; height: 15px; }
+  }
+  @media (max-width: 860px) and (max-height: 760px) {
+    .six.is-pinned .mcard-fact { display: none; }
+  }
+</style>

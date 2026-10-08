@@ -1,0 +1,19 @@
+---
+import { siYoutube, siInstagram, siTiktok, siX, siThreads, siGithub, siBehance, siDribbble } from 'simple-icons';
+interface Props { name: string; class?: string }
+const { name, class: cls = '' } = Astro.props;
+const brand: Record<string, string> = {
+  youtube: siYoutube.path, instagram: siInstagram.path, tiktok: siTiktok.path, x: siX.path,
+  threads: siThreads.path, github: siGithub.path, behance: siBehance.path, dribbble: siDribbble.path,
+};
+const custom: Record<string, string> = {
+  linkedin: 'M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9.5h4V21H3V9.5Zm6.5 0h3.8v1.6h.06c.53-1 1.84-2.06 3.79-2.06 4.05 0 4.8 2.67 4.8 6.13V21h-4v-5.1c0-1.22-.02-2.78-1.7-2.78-1.7 0-1.96 1.33-1.96 2.7V21h-4V9.5Z',
+  website: 'M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm6.9 6h-3a15.6 15.6 0 0 0-1.4-3.6A8 8 0 0 1 18.9 8ZM12 4.04c.83 1.2 1.48 2.53 1.91 3.96h-3.82c.43-1.43 1.08-2.76 1.91-3.96ZM4.26 14a8.2 8.2 0 0 1 0-4h3.38a16.5 16.5 0 0 0 0 4H4.26Zm.82 2h3a15.6 15.6 0 0 0 1.4 3.6A8 8 0 0 1 5.08 16Zm3-8h-3a8 8 0 0 1 4.4-3.6A15.6 15.6 0 0 0 8.08 8ZM12 19.96A14 14 0 0 1 10.09 16h3.82A14 14 0 0 1 12 19.96ZM14.34 14H9.66a14.7 14.7 0 0 1 0-4h4.68a14.7 14.7 0 0 1 0 4Zm.25 5.56A15.6 15.6 0 0 0 15.92 16h3a8 8 0 0 1-4.33 3.56ZM16.36 14a16.5 16.5 0 0 0 0-4h3.38a8.2 8.2 0 0 1 0 4h-3.38Z',
+  arrow: 'M7 17 17 7M8 7h9v9',
+  play: 'M8 5.5v13l11-6.5-11-6.5Z',
+  mail: 'M3 5h18v14H3V5Zm2 2v.3l7 4.7 7-4.7V7H5Zm14 2.7-7 4.6-7-4.6V17h14V9.7Z',
+};
+const isStroke = name === 'arrow';
+const d = brand[name] ?? custom[name] ?? custom.website;
+---
+<svg class={`ico ${cls}`} viewBox="0 0 24 24" aria-hidden="true" fill={isStroke ? 'none' : 'currentColor'} stroke={isStroke ? 'currentColor' : 'none'} stroke-width={isStroke ? 2.2 : 0} stroke-linecap="round" stroke-linejoin="round"><path d={d} /></svg>

@@ -1,0 +1,72 @@
+---
+import { journey } from '../data/site';
+import Cursor from './Cursor.astro';
+const colors = ['lime', 'apricot', 'lilac', 'blush', 'sky', 'butter', 'lime'];
+---
+<section class="origin" id="origin" data-origin>
+  <div class="or-pin" data-pin>
+    <div class="wrap or-head">
+      <div>
+        <p class="eyebrow mono" style="--c:var(--butter)">06 · Where we came from</p>
+        <h2 class="sec-title or-title">We played<br />our way in.</h2>
+      </div>
+      <div class="or-about">
+        <p><b>Learn2Earn</b> is a tuition-free, peer-led tech fellowship in Nigeria. No CVs: you get in by passing games, then surviving a 26-day trial. That’s where the six of us met.</p>
+        <a class="btn" href="https://learn2earn.ng" target="_blank" rel="noopener" data-cursor="learn2earn.ng">learn2earn.ng ↗</a>
+      </div>
+    </div>
+    <div class="or-view" data-view>
+      <div class="or-track" data-track>
+        {journey.map((j, i) => (
+          <div class={`or-cp ${i % 2 ? 'is-down' : 'is-up'} ${i === journey.length - 1 ? 'is-now' : ''}`} data-cp style={`--c:var(--${colors[i]})`}>
+            <span class="or-dot" data-dot><i></i></span>
+            <div class="or-card" data-card>
+              <p class="mono">{j.tag}</p>
+              <h3>{j.title}</h3>
+              <p class="or-text">{j.text}</p>
+            </div>
+          </div>
+        ))}
+        <div class="cur-layer"><Cursor who="ngozi" label="Ngozi · player 1" /></div>
+      </div>
+    </div>
+  </div>
+</section>
+<style is:global>
+  .or-pin { position: relative; min-height: 100svh; display: grid; grid-template-rows: auto 1fr; padding-top: calc(var(--bar-h) + 28px); overflow: hidden; }
+  .or-head { display: flex; justify-content: space-between; align-items: end; gap: 24px 48px; flex-wrap: wrap; }
+  .or-title { font-size: clamp(48px, 7.4vw, 124px); }
+  .or-about { max-width: 46ch; display: grid; gap: 16px; justify-items: start; font-size: 17px; }
+  .or-view { position: relative; min-height: 380px; overflow-x: auto; }
+  .js .or-view { overflow: hidden; }
+  .or-track { position: relative; height: 100%; min-height: 380px; display: flex; align-items: center; gap: 0; padding-inline: var(--gutter) 30vw; width: max-content; }
+  .or-cp { position: relative; flex: none; width: clamp(260px, 26vw, 360px); height: 100%; min-height: 380px; }
+  .or-dot {
+    position: absolute; left: 0; top: 50%; width: 28px; height: 28px; margin: -14px 0 0 -14px; border-radius: 50%;
+    border: 2px solid var(--burgundy); background: var(--paper); z-index: 3; display: grid; place-items: center;
+  }
+  .or-cp.is-up .or-dot { top: 44%; }
+  .or-cp.is-down .or-dot { top: 56%; }
+  .or-dot i { width: 10px; height: 10px; border-radius: 50%; background: var(--c); transform: scale(1); }
+  .or-card {
+    position: absolute; left: -14px; width: calc(100% - 40px);
+    padding: 16px 18px; border-radius: var(--radius); border: 1.5px solid var(--burgundy); background: var(--paper);
+    display: grid; gap: 6px;
+  }
+  .or-cp.is-up .or-card { bottom: calc(56% + 26px); }
+  .or-cp.is-down .or-card { top: calc(56% + 26px); }
+  .or-card .mono { display: inline-block; justify-self: start; padding: 3px 8px; border-radius: 4px; background: var(--c); border: 1.5px solid var(--burgundy); font-size: 10px; }
+  .or-card h3 { font-weight: 850; font-stretch: 85%; font-size: clamp(24px, 2.4vw, 34px); line-height: 0.95; text-transform: uppercase; }
+  .or-text { font-size: 15px; line-height: 1.35; color: var(--wine); }
+  .or-cp.is-now .or-card { background: var(--lime); box-shadow: 5px 5px 0 var(--burgundy); }
+  .or-cp.is-now .or-text { color: var(--burgundy); }
+  .or-route { position: absolute; left: 0; top: 0; overflow: visible; pointer-events: none; z-index: 1; }
+  .or-route .map { fill: none; stroke: var(--pencil); stroke-width: 2; stroke-dasharray: 2 9; stroke-linecap: round; }
+  .or-route .trail { fill: none; stroke: var(--burgundy); stroke-width: 4; stroke-linecap: round; stroke-dasharray: 1 1; }
+  @media (max-width: 760px) {
+    .or-about { font-size: 15px; }
+    .or-about .btn { padding: 11px 16px 10px; font-size: 14px; }
+    .or-track, .or-cp, .or-view { min-height: 330px; }
+    .or-cp { width: 240px; }
+  }
+</style>

@@ -1,0 +1,95 @@
+---
+import { members, site } from '../data/site';
+import Cursor from './Cursor.astro';
+import Icon from './Icon.astro';
+const boards = [
+  { id: 'hero', label: 'Hero', c: 'lime', x: 4, y: 8, w: 26, h: 24 },
+  { id: 'about', label: 'Who we are', c: 'sky', x: 37, y: 3, w: 24, h: 17 },
+  { id: 'six', label: 'The six', c: 'apricot', x: 69, y: 7, w: 27, h: 25 },
+  { id: 'together', label: 'Built together', c: 'lilac', x: 2, y: 40, w: 22, h: 22 },
+  { id: 'alone', label: 'Built alone', c: 'blush', x: 76, y: 40, w: 22, h: 21 },
+  { id: 'public', label: 'In public', c: 'lime', x: 8, y: 70, w: 24, h: 26 },
+  { id: 'origin', label: 'Origin', c: 'butter', x: 39, y: 79, w: 25, h: 17 },
+  { id: 'name', label: 'Name us', c: 'blush', x: 70, y: 70, w: 26, h: 24 },
+];
+---
+<section class="hello" id="hello" data-hello>
+  <div class="he-pin" data-pin>
+    <div class="he-canvas" data-canvas aria-hidden="true">
+      {boards.map((b) => (
+        <div class={`he-board he-${b.id}`} data-board style={`--c:var(--${b.c});left:${b.x}%;top:${b.y}%;width:${b.w}%;height:${b.h}%`}>
+          <span class="he-label mono">{b.label}</span>
+          <div class="he-mini">
+            {b.id === 'hero' && <b class="he-word">Untitled</b>}
+            {b.id === 'about' && <><i class="ln" /><i class="ln" /><i class="ln short" /></>}
+            {b.id === 'six' && <div class="he-dots">{members.map((m) => <span style={`--c:var(--${m.color})`} />)}</div>}
+            {b.id === 'together' && <div class="he-blocks"><span /><span /></div>}
+            {b.id === 'alone' && <><i class="ln" /><i class="ln" /><i class="ln" /><i class="ln short" /></>}
+            {b.id === 'public' && <div class="he-phone" />}
+            {b.id === 'origin' && <svg viewBox="0 0 100 30" class="he-wave"><path d="M2 20 C 20 2, 30 28, 50 14 S 80 4, 98 16" /></svg>}
+            {b.id === 'name' && <s class="he-struck">The Six</s>}
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <div class="he-center">
+    <div class="he-cta" data-cta>
+      <p class="eyebrow mono" style="--c:var(--lime)">08 · Say hi</p>
+      <h2 class="sec-title he-title">Still untitled.<br />Still building.</h2>
+      <p class="sec-sub">Got a project, a collab, a job, or a name idea? We read everything.</p>
+      <div class="he-actions">
+        <a class="btn btn-ink" href={`mailto:${site.email}`} data-cursor="Email us"><Icon name="mail" /> {site.email}</a>
+        <button class="btn" type="button" data-copy={site.email} data-cursor="Copy">Copy email</button>
+      </div>
+      <p class="mono he-copied" data-copied role="status"></p>
+    </div>
+    </div>
+
+    <div class="cur-layer" data-waves>{members.map((m) => <Cursor who={m.slug} />)}</div>
+  </div>
+</section>
+<style is:global>
+  .he-pin { position: relative; height: 100svh; min-height: 620px; overflow: hidden; }
+  .he-canvas {
+    position: absolute; inset: calc(var(--bar-h) + 16px) var(--gutter) 16px;
+    background-image: radial-gradient(circle at 1px 1px, var(--line-strong) 1.1px, transparent 1.4px);
+    background-size: 24px 24px;
+    transform-origin: 17% 20%;
+  }
+  .he-board { position: absolute; border: 1.5px solid var(--burgundy); border-radius: 12px; background: var(--paper); overflow: hidden; }
+  .he-label { position: absolute; left: 0; top: -22px; font-size: 10px; color: var(--wine); white-space: nowrap; }
+  .he-board .he-label { top: 8px; left: 10px; z-index: 2; padding: 2px 6px; border-radius: 4px; background: var(--c); border: 1px solid var(--burgundy); }
+  .he-mini { position: absolute; inset: 34px 12px 12px; display: grid; align-content: center; gap: 8px; }
+  .he-mini .ln { display: block; height: 8px; border-radius: 9px; background: color-mix(in srgb, var(--burgundy) 22%, transparent); }
+  .he-mini .ln.short { width: 60%; }
+  .he-word { font-weight: 900; font-stretch: 130%; text-transform: uppercase; font-size: clamp(16px, 3vw, 44px); line-height: 1; text-align: center; }
+  .he-hero { background: color-mix(in srgb, var(--lime) 35%, var(--paper)); }
+  .he-dots { display: flex; justify-content: center; flex-wrap: wrap; gap: 6px; }
+  .he-dots span { width: clamp(14px, 2.4vw, 34px); aspect-ratio: 1; border-radius: 50%; background: var(--c); border: 1.5px solid var(--burgundy); }
+  .he-blocks { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; height: 100%; }
+  .he-blocks span { border-radius: 8px; background: var(--c); border: 1.5px solid var(--burgundy); }
+  .he-phone { justify-self: center; height: 90%; aspect-ratio: 9 / 16; border-radius: 12px; border: 1.5px solid var(--burgundy); background: var(--c); }
+  .he-wave { width: 100%; overflow: visible; }
+  .he-wave path { fill: none; stroke: var(--burgundy); stroke-width: 2.5; stroke-linecap: round; }
+  .he-struck { justify-self: center; font-weight: 900; font-stretch: 100%; text-transform: uppercase; font-size: clamp(14px, 2.2vw, 30px); text-decoration-thickness: 3px; }
+
+  .he-center { position: absolute; inset: calc(var(--bar-h) + 16px) var(--gutter) 16px; display: grid; place-items: center; z-index: 5; pointer-events: none; }
+  .he-cta {
+    pointer-events: auto;
+    width: min(720px, 100%);
+    display: grid; gap: 18px; justify-items: center; text-align: center;
+    padding: clamp(24px, 4vw, 44px); border-radius: calc(var(--radius) + 8px);
+    background: var(--bone); border: 1.5px solid var(--burgundy); box-shadow: 8px 8px 0 var(--burgundy);
+    z-index: 5;
+  }
+  .he-title { font-size: clamp(44px, 7vw, 110px); }
+  .he-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
+  .he-actions .btn { font-size: 15px; }
+  .he-copied { min-height: 1.4em; color: var(--wine); }
+  .hello .cur-layer { z-index: 6; }
+  @media (max-width: 760px) {
+    .he-board:nth-child(n + 4):not(.he-public):not(.he-name) { display: none; }
+    .he-actions .btn { white-space: normal; text-align: center; justify-content: center; }
+  }
+</style>

@@ -1,0 +1,11 @@
+---
+import { memberBySlug } from '../data/site';
+import Avatar from './Avatar.astro';
+interface Props { who: string; text: string; class?: string; style?: string }
+const { who, text, class: cls = '', style = '' } = Astro.props;
+const m = memberBySlug(who);
+---
+<div class={`cmt ${cls}`} style={style} data-cmt={who} aria-hidden="true">
+  <Avatar m={m} size={26} />
+  <div><b>{m.first}</b><p set:html={text} /></div>
+</div>

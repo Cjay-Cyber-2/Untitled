@@ -1,0 +1,96 @@
+---
+import { members, rejectedNames, memberBySlug } from '../data/site';
+import Cursor from './Cursor.astro';
+---
+<section class="nameus" id="name" data-name>
+  <div class="wrap">
+    <div class="sec-head nu-head">
+      <p class="eyebrow mono" style="--c:var(--blush)">07 · Name us</p>
+    </div>
+    <div class="nu-stage" data-stage>
+      <p class="nu-line serif">We’re still called</p>
+      <p class="nu-name" aria-live="polite"><span class="nu-slot" data-slot>Untitled.</span></p>
+      <p class="nu-by mono" data-by>Suggested by nobody · approved by everybody</p>
+      <div class="cmt nu-cmt" data-reject aria-hidden="true">
+        <span class="av" data-rav>?</span>
+        <div><b data-rname>Someone</b><p data-rtext>Rejected.</p></div>
+      </div>
+      <div class="cur-layer">{members.map((m) => <Cursor who={m.slug} />)}<Cursor who="guest" label="You" class="nu-guest" /></div>
+    </div>
+
+    <div class="nu-bottom">
+      <form class="nu-form" data-form>
+        <label for="nu-input" class="hand">got a better name? pitch it ↓</label>
+        <div class="nu-row">
+          <input id="nu-input" name="name" type="text" maxlength="28" autocomplete="off" placeholder="Type a name…" required />
+          <button class="btn btn-solid" type="submit" data-cursor="Pitch">Pitch it</button>
+        </div>
+        <p class="nu-fine mono">Every name is reviewed by six very picky people.</p>
+      </form>
+
+      <div class="nu-grave">
+        <h3 class="mono">The name graveyard · RIP</h3>
+        <ul class="nu-stones" data-grave>
+          {rejectedNames.map((n) => {
+            const m = memberBySlug(n.by);
+            return (
+              <li class="stone" style={`--c:var(--${m.color})`}>
+                <span class="mono">RIP</span>
+                <s>{n.name}</s>
+                <span class="stone-by">by {m.first} · {n.cause}</span>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+<style is:global>
+  .nu-head { padding-bottom: 24px; }
+  .nu-stage { position: relative; padding-block: 20px 60px; min-height: clamp(280px, 30vw, 440px); }
+  .nu-line { font-size: clamp(28px, 4vw, 60px); line-height: 1; }
+  .nu-name { min-height: 1em; font-weight: 900; font-stretch: 115%; text-transform: uppercase; font-size: calc(clamp(52px, 10vw, 172px) * var(--fit, 1)); transition: font-size 0.25s var(--ease-out); line-height: 0.95; letter-spacing: -0.03em; white-space: nowrap; }
+  .nu-slot { position: relative; display: inline-block; }
+  .nu-slot::after {
+    content: ''; position: absolute; left: -2%; right: -2%; top: 52%; height: 0.08em; background: var(--burgundy);
+    transform: scaleX(0); transform-origin: 0 50%; transition: transform 0.35s var(--ease-out);
+  }
+  .nu-slot.is-struck::after { transform: scaleX(1); }
+  .nu-slot.is-sel { background: color-mix(in srgb, var(--lilac) 70%, transparent); }
+  .nu-slot.is-typing::before {
+    content: ''; position: absolute; right: -0.06em; top: 0.12em; width: 0.06em; height: 0.72em; background: var(--burgundy);
+    animation: caret 0.8s steps(1) infinite;
+  }
+  .nu-by { margin-top: 18px; color: var(--wine); min-height: 1.4em; }
+  .nu-cmt { opacity: 0; right: 4%; top: 0; }
+  .nu-cmt .av { --s: 26px; }
+  .nu-guest .cur-tag { background: var(--paper); }
+
+  .nu-bottom { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: clamp(32px, 6vw, 96px); padding-bottom: clamp(80px, 10vw, 140px); }
+  .nu-form { display: grid; gap: 14px; align-content: start; }
+  .nu-row { display: flex; gap: 10px; flex-wrap: wrap; }
+  .nu-row input {
+    flex: 1 1 220px; min-width: 0; padding: 15px 18px; border-radius: 99px;
+    border: 1.5px solid var(--burgundy); background: var(--paper); font-size: 18px; font-weight: 600;
+  }
+  .nu-row input:focus { outline: none; box-shadow: 4px 4px 0 var(--lime); }
+  .nu-row input::placeholder { color: color-mix(in srgb, var(--wine) 60%, transparent); }
+  .nu-fine { color: var(--wine); font-size: 11px; }
+  .nu-grave h3 { margin-bottom: 16px; color: var(--wine); }
+  .nu-stones { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+  .stone {
+    display: grid; gap: 6px; justify-items: center; text-align: center; align-content: start;
+    padding: 22px 12px 16px; min-height: 150px;
+    border-radius: 999px 999px 14px 14px; border: 1.5px solid var(--burgundy);
+    background: color-mix(in srgb, var(--c) 40%, var(--paper));
+    transform: rotate(var(--tilt, 0deg));
+  }
+  .stone:nth-child(3n + 1) { --tilt: -1.5deg; }
+  .stone:nth-child(3n + 2) { --tilt: 1deg; }
+  .stone .mono { font-size: 10px; }
+  .stone s { font-weight: 850; font-stretch: 85%; font-size: 20px; line-height: 1; text-transform: uppercase; text-decoration-thickness: 2px; }
+  .stone-by { font-size: 12px; line-height: 1.3; color: var(--wine); }
+  .stone.is-new { background: var(--lime); }
+  @media (max-width: 860px) { .nu-bottom { grid-template-columns: 1fr; } .nu-cmt { right: 0; top: auto; bottom: 0; } }
+</style>

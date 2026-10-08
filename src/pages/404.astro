@@ -1,0 +1,19 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base title="404 · Untitled">
+  <section class="nf">
+    <p class="eyebrow mono">Error 404</p>
+    <h1 class="nf-title">This page<br />is also<br />untitled.</h1>
+    <p class="sec-sub">We couldn’t find it. To be fair, we can’t find a name either.</p>
+    <a class="btn btn-solid" href="/">Back to the homepage</a>
+  </section>
+</Base>
+<script>
+  import { initChrome } from '../scripts/chrome';
+  initChrome();
+</script>
+<style>
+  .nf { min-height: 100svh; display: grid; align-content: center; justify-items: start; gap: 24px; padding: calc(var(--bar-h) + 40px) var(--gutter) 60px; }
+  .nf-title { font-weight: 900; font-stretch: 120%; text-transform: uppercase; font-size: clamp(56px, 12vw, 200px); line-height: 0.84; letter-spacing: -0.03em; }
+</style>

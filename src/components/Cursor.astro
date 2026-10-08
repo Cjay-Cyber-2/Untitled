@@ -1,0 +1,15 @@
+---
+import { memberBySlug } from '../data/site';
+interface Props { who: string; label?: string; class?: string }
+const { who, label, class: cls = '' } = Astro.props;
+const m = who === 'guest' ? null : memberBySlug(who);
+const name = label ?? m?.first ?? 'You';
+const color = m ? `var(--${m.color})` : 'var(--paper)';
+---
+<div class={`cur ${cls}`} data-cur={who} style={`--c:${color}`} aria-hidden="true">
+  <div class="cur-inner">
+    <svg class="cur-arrow" viewBox="0 0 24 24"><path d="M3.2 2.2 3.4 19.6 8.2 15.2 11.4 22.2 14.9 20.6 11.7 13.8 18.2 13.4Z" /></svg>
+    <span class="cur-ring"></span>
+    <span class="cur-tag">{name}</span>
+  </div>
+</div>

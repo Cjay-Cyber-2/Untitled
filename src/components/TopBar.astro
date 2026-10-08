@@ -1,0 +1,95 @@
+---
+import { members } from '../data/site';
+import Avatar from './Avatar.astro';
+interface Props { home?: boolean }
+const { home = false } = Astro.props;
+const base = home ? '' : '/';
+const links = [
+  ['about', 'Who we are'],
+  ['six', 'The six'],
+  ['together', 'Together'],
+  ['alone', 'Alone'],
+  ['public', 'In public'],
+  ['origin', 'Origin'],
+  ['name', 'Name us'],
+];
+---
+<header class="tb" data-tb>
+  <a class="tb-logo" href={home ? '#top' : '/'} data-cursor="Home" aria-label="Untitled, home">
+    <svg class="tb-file" viewBox="0 0 24 28" aria-hidden="true"><path d="M3 2h12l6 6v18H3z" /><path d="M15 2v6h6" /></svg>
+    <span class="tb-name">Untitled</span>
+    <span class="tb-edited mono">— Edited</span>
+    <i class="tb-dot" aria-hidden="true"></i>
+  </a>
+  <nav class="tb-nav" aria-label="Sections">
+    {links.map(([id, label]) => <a href={`${base}#${id}`}>{label}</a>)}
+  </nav>
+  <div class="tb-right">
+    <span class="tb-build mono" data-build aria-hidden="true">Building… 0%</span>
+    <div class="tb-avs">
+      {members.map((m) => (
+        <a href={`/members/${m.slug}`} class="tb-av" data-cursor={m.first} data-wipe={`var(--${m.color})`} aria-label={`${m.first}'s page`}>
+          <Avatar m={m} size={30} />
+        </a>
+      ))}
+    </div>
+    <span class="tb-count mono"><b data-editing>6</b> editing</span>
+    <a class="btn btn-solid tb-follow" href={`${base}#follow`} data-cursor="Follow">Follow</a>
+    <button class="tb-menu mono" type="button" aria-expanded="false" aria-controls="tb-sheet" data-menu>Menu</button>
+  </div>
+  <div class="tb-progress" aria-hidden="true"><i data-progress></i></div>
+</header>
+<div class="tb-sheet" id="tb-sheet" data-sheet hidden>
+  <nav aria-label="Sections">
+    {links.map(([id, label], i) => <a href={`${base}#${id}`} style={`--c:var(--${['lime','apricot','lilac','blush','sky','butter','lime'][i]})`}><span class="mono">0{i + 1}</span>{label}</a>)}
+  </nav>
+</div>
+<style is:global>
+  .tb {
+    position: fixed; left: 0; right: 0; top: 0; z-index: 80;
+    height: calc(var(--bar-h) + env(safe-area-inset-top, 0px));
+    padding: env(safe-area-inset-top, 0px) var(--gutter) 0;
+    display: flex; align-items: center; gap: 24px;
+    background: color-mix(in srgb, var(--bone) 82%, transparent);
+    backdrop-filter: blur(12px) saturate(1.2);
+    -webkit-backdrop-filter: blur(12px) saturate(1.2);
+    border-bottom: 1px solid var(--line);
+  }
+  .tb-logo { display: flex; align-items: center; gap: 8px; flex: none; }
+  .tb-file { width: 18px; height: 21px; }
+  .tb-file path { fill: var(--paper); stroke: var(--burgundy); stroke-width: 1.8; stroke-linejoin: round; }
+  .tb-name { font-weight: 900; font-stretch: 125%; font-size: 19px; text-transform: uppercase; letter-spacing: -0.01em; }
+  .tb-edited { color: var(--wine); }
+  .tb-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--burgundy); animation: pulse 2s ease-in-out infinite; }
+  .tb-nav { display: flex; gap: 4px; margin-inline: auto; }
+  .tb-nav a { position: relative; padding: 8px 12px; border-radius: 99px; font-size: 14px; font-weight: 600; font-stretch: 92%; transition: background-color 0.2s; }
+  .tb-nav a:hover, .tb-nav a.is-active { background: var(--paper); box-shadow: inset 0 0 0 1.5px var(--burgundy); }
+  .tb-right { display: flex; align-items: center; gap: 14px; margin-left: auto; }
+  .tb-build { color: var(--wine); min-width: 15ch; text-align: right; font-variant-numeric: tabular-nums; }
+  .tb-avs { display: flex; }
+  .tb-av { margin-left: -9px; transition: translate 0.25s var(--ease-out), scale 0.25s var(--ease-out); }
+  .tb-av:first-child { margin-left: 0; }
+  .tb-av:hover { translate: 0 -3px; scale: 1.12; z-index: 2; }
+  .tb-count b { font-weight: 600; }
+  .tb-follow { padding: 10px 16px 9px; font-size: 14px; box-shadow: 3px 3px 0 var(--burgundy); }
+  .tb-menu { display: none; padding: 10px 14px; border: 1.5px solid var(--burgundy); border-radius: 99px; background: var(--paper); }
+  .tb-progress { position: absolute; left: 0; right: 0; bottom: -1px; height: 3px; }
+  .tb-progress i { display: block; height: 100%; background: var(--burgundy); transform-origin: 0 50%; transform: scaleX(0); }
+
+  .tb-sheet {
+    position: fixed; z-index: 79; inset: calc(var(--bar-h) + env(safe-area-inset-top, 0px)) 0 auto 0;
+    background: var(--bone); border-bottom: 1.5px solid var(--burgundy);
+    padding: 12px var(--gutter) 24px;
+  }
+  .tb-sheet nav { display: grid; }
+  .tb-sheet a { display: flex; align-items: baseline; gap: 14px; padding: 12px 0; border-bottom: 1px dashed var(--line-strong); font-weight: 800; font-stretch: 75%; font-size: 34px; text-transform: uppercase; line-height: 1; }
+  .tb-sheet a span { padding: 3px 6px; border-radius: 4px; background: var(--c); border: 1.5px solid var(--burgundy); }
+
+  @media (max-width: 1180px) { .tb-nav { display: none; } .tb-menu { display: inline-flex; } }
+  @media (max-width: 860px) { .tb-build, .tb-count { display: none; } }
+  @media (max-width: 560px) {
+    .tb { gap: 10px; }
+    .tb-edited, .tb-avs { display: none; }
+    .tb-follow { display: none; }
+  }
+</style>

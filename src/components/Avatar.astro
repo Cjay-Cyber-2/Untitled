@@ -1,0 +1,8 @@
+---
+import type { Member } from '../data/site';
+interface Props { m: Member; size?: number; class?: string }
+const { m, size = 34, class: cls = '' } = Astro.props;
+---
+<span class={`av ${cls}`} style={`--c:var(--${m.color});--s:${size}px`} title={m.first}>
+  {m.photo ? <img src={m.photo} alt="" loading="lazy" /> : m.first[0]}
+</span>

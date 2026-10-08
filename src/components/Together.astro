@@ -1,0 +1,104 @@
+---
+import { groupProjects, memberBySlug } from '../data/site';
+import Cursor from './Cursor.astro';
+import Comment from './Comment.astro';
+import Shot from './Shot.astro';
+import Avatar from './Avatar.astro';
+import Icon from './Icon.astro';
+---
+<section class="together" id="together" data-together>
+  <div class="tg-pin" data-pin>
+    <div class="tg-track" data-track>
+      <div class="tg-intro">
+        <p class="eyebrow mono" style="--c:var(--lilac)">03 · Built together</p>
+        <h2 class="sec-title">Built<br />together.</h2>
+        <p class="sec-sub">Things that needed all of us. Or at least three of us and a lot of voice notes.</p>
+        <p class="hand tg-hint" aria-hidden="true">keep scrolling, it goes sideways →</p>
+      </div>
+
+      {groupProjects.map((p, i) => (
+        <article class="gp" data-gp style={`--c:var(--${p.color})`} aria-labelledby={`gp-${p.slug}`}>
+          <div class="gp-shot-slot" data-slot>
+            <div class="gp-shot" data-shot><Shot p={p} /></div>
+            <span class="sel" data-sel style={`--c:var(--${memberBySlug(p.team[0].who).color})`}><i></i><i></i><i></i><i></i><b>Frame · 1440 × 900</b></span>
+          </div>
+          <div class="gp-info">
+            <p class="mono gp-no" data-bit>Project 0{i + 1} · {p.year}</p>
+            <h3 class="gp-name" id={`gp-${p.slug}`}><span data-type>{p.name}</span></h3>
+            <p class="gp-line" data-bit>{p.line}</p>
+            <p class="gp-problem serif" data-bit>{p.problem}</p>
+            <ul class="gp-team" data-bit>
+              {p.team.map((t) => {
+                const m = memberBySlug(t.who);
+                return <li><Avatar m={m} size={30} /><span><b>{m.first}</b> {t.did}</span></li>;
+              })}
+            </ul>
+            <div class="gp-meta" data-bit>
+              <span class="status" data-s={p.status}>{p.status}</span>
+              <span class="gp-stack">{p.stack.map((s) => <span class="chip">{s}</span>)}</span>
+            </div>
+            <div class="gp-links" data-bit>
+              {p.links.live && <a class="btn btn-solid" href={p.links.live} target="_blank" rel="noopener" data-cursor="Visit">Live site <Icon name="arrow" /></a>}
+              {p.links.code && <a class="btn" href={p.links.code} target="_blank" rel="noopener" data-cursor="Code">Code <Icon name="arrow" /></a>}
+              {p.links.video && <a class="btn" href={p.links.video} target="_blank" rel="noopener" data-cursor="Watch">Video <Icon name="play" /></a>}
+            </div>
+          </div>
+          <Comment who={p.team[p.team.length - 1].who} text={p.note} class="gp-note" />
+          <div class="cur-layer">{p.team.map((t) => <Cursor who={t.who} />)}</div>
+        </article>
+      ))}
+
+      <div class="tg-outro">
+        <p class="sec-title">More<br />coming.</p>
+        <p class="hand">(probably.)</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style is:global>
+  .tg-pin { position: relative; overflow: hidden; }
+  .tg-track {
+    display: flex; align-items: stretch; gap: clamp(24px, 4vw, 64px);
+    padding: calc(var(--bar-h) + 32px) var(--gutter) 40px;
+    width: max-content;
+  }
+  .tg-intro, .tg-outro { flex: none; width: min(560px, 82vw); display: flex; flex-direction: column; justify-content: center; gap: 22px; }
+  .tg-outro { width: min(520px, 70vw); }
+  .tg-hint { transform: rotate(-3deg); }
+  .gp {
+    position: relative; flex: none; isolation: isolate;
+    width: min(1180px, 88vw);
+    height: calc(100svh - var(--bar-h) - 72px);
+    min-height: 520px;
+    display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: clamp(20px, 3vw, 44px);
+    padding: clamp(16px, 2vw, 28px);
+    border: 1.5px solid var(--burgundy); border-radius: calc(var(--radius) + 6px);
+    background: color-mix(in srgb, var(--c) 26%, var(--paper));
+  }
+  .gp-shot-slot { position: relative; min-height: 0; }
+  .gp-shot { position: absolute; inset: 0; }
+  .gp-shot .shot { height: 100%; box-shadow: 6px 6px 0 var(--burgundy); }
+  .gp-shot .shot-ph { inset: 0 -6%; --ph-x: 12%; }
+  .gp-shot-slot .sel { inset: -6px; }
+  .gp-info { display: flex; flex-direction: column; gap: clamp(10px, 1.4vw, 18px); min-width: 0; padding-block: 6px; }
+  .gp-name { font-weight: 900; font-stretch: 110%; text-transform: uppercase; font-size: clamp(42px, 5.6vw, 96px); line-height: 0.84; letter-spacing: -0.025em; }
+  .gp-line { font-weight: 650; font-size: clamp(18px, 1.6vw, 24px); line-height: 1.25; }
+  .gp-problem { font-size: clamp(18px, 1.6vw, 24px); color: var(--wine); line-height: 1.2; }
+  .gp-team { display: grid; gap: 8px; }
+  .gp-team li { display: flex; align-items: center; gap: 10px; font-size: 15px; }
+  .gp-team b { font-weight: 700; }
+  .gp-meta { display: flex; flex-direction: column; gap: 10px; }
+  .gp-stack { display: flex; flex-wrap: wrap; gap: 6px; }
+  .gp-links { display: flex; flex-wrap: wrap; gap: 12px; margin-top: auto; }
+  .gp-links .btn { padding: 12px 18px 11px; font-size: 15px; }
+  .gp-note { left: 18%; top: -22px; transform: rotate(-3deg); }
+
+  @media (max-width: 860px) {
+    .gp { grid-template-columns: 1fr; grid-template-rows: 38% 1fr; min-height: 0; gap: 16px; }
+    .gp-problem, .gp-team { display: none; }
+    .gp-name { font-size: clamp(38px, 12vw, 64px); }
+    .gp-note { left: auto; right: 8%; top: -16px; }
+  }
+  @media (max-height: 760px) and (min-width: 861px) { .gp-problem { display: none; } }
+</style>

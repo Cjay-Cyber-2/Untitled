@@ -1,0 +1,34 @@
+---
+import Cursor from './Cursor.astro';
+---
+<section class="about" id="about" data-about>
+  <div class="about-pin" data-pin>
+    <div class="wrap about-inner">
+      <p class="eyebrow mono" style="--c:var(--sky)">01 · Who we are</p>
+      <p class="about-text" data-text>
+        We’re six Learn2Earn fellows who <span data-mark="hl">couldn’t agree on a name.</span> So we stopped arguing and started building: apps, websites, experiments, and the videos about making them. Everything we make, we make <span data-mark="circle">in public,</span> mistakes included.
+      </p>
+      <p class="hand about-note" data-note>(we argued for three weeks. it’s fine.)</p>
+    </div>
+    <div class="cur-layer">
+      <Cursor who="femi" />
+      <Cursor who="ada" />
+      <Cursor who="kemi" />
+    </div>
+  </div>
+</section>
+<style is:global>
+  .about-pin { position: relative; min-height: 100svh; display: grid; align-items: center; overflow: hidden; }
+  .about-inner { position: relative; display: grid; gap: clamp(24px, 3vw, 40px); padding-block: calc(var(--bar-h) + 40px) 60px; }
+  .about-text {
+    position: relative;
+    font-weight: 650; font-stretch: 86%;
+    font-size: clamp(28px, 3.9vw, 64px);
+    line-height: 1.06; letter-spacing: -0.015em;
+    max-width: 30ch;
+    text-wrap: pretty;
+  }
+  .about-text .w { will-change: opacity; }
+  .about-note { justify-self: end; transform: rotate(-3deg); font-size: clamp(26px, 2.6vw, 36px); }
+  @media (max-width: 760px) { .about-note { justify-self: start; } }
+</style>

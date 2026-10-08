@@ -1,0 +1,167 @@
+---
+import Base from '../../layouts/Base.astro';
+import Footer from '../../components/Footer.astro';
+import Cursor from '../../components/Cursor.astro';
+import Portrait from '../../components/Portrait.astro';
+import Shot from '../../components/Shot.astro';
+import Icon from '../../components/Icon.astro';
+import { members, fullName, projectsFor, memberBySlug } from '../../data/site';
+
+export function getStaticPaths() {
+  return members.map((m) => ({ params: { slug: m.slug } }));
+}
+const { slug } = Astro.params;
+const m = memberBySlug(slug!);
+const i = members.indexOf(m);
+const prev = members[(i - 1 + members.length) % members.length];
+const next = members[(i + 1) % members.length];
+const { solo, group } = projectsFor(m.slug);
+const work = [...group.map((p) => ({ p, kind: 'Together', did: p.team.find((t) => t.who === m.slug)!.did })), ...solo.map((p) => ({ p, kind: 'Solo', did: 'Everything' }))];
+const pfName: Record<string, string> = { youtube: 'YouTube', tiktok: 'TikTok', instagram: 'Instagram', x: 'X', threads: 'Threads', github: 'GitHub', linkedin: 'LinkedIn', behance: 'Behance', dribbble: 'Dribbble', website: 'Website' };
+---
+<Base title={`${m.first} · Untitled`} description={`${fullName(m)}, ${m.role} at Untitled. ${m.oneLiner}`}>
+  <article class="mp" style={`--c:var(--${m.color})`}>
+    <section class="mp-hero" data-mhero>
+      <div class="mp-flood" data-flood></div>
+      <div class="wrap mp-hero-grid">
+        <div class="mp-left">
+          <a class="mp-back mono" href="/#six" data-cursor="Back">← Back to the six</a>
+          <p class="mono mp-meta" data-in>No. 0{i + 1} · {m.campus} · {m.role}</p>
+          <h1 class="mp-name"><span data-type>{m.first}</span></h1>
+          <p class="mp-last" data-in>{m.last}</p>
+          <p class="mp-line serif" data-in>“{m.oneLiner}”</p>
+          <div class="mp-open" data-in><span class="mono">Open to</span>{m.openTo.map((o) => <span class="chip">{o}</span>)}</div>
+        </div>
+        <div class="mp-photo-slot" data-slot>
+          <div class="mp-photo" data-photo><Portrait m={m} eager /></div>
+        </div>
+      </div>
+      <div class="cur-layer"><Cursor who={m.slug} /></div>
+    </section>
+
+    <section class="wrap mp-about">
+      <div class="mp-block" data-reveal>
+        <p class="eyebrow mono">About</p>
+        <p class="mp-bio">{m.bio}</p>
+      </div>
+      <dl class="mp-facts" data-reveal>
+        <div><dt class="mono">Made of</dt><dd>{m.madeOf.map((x) => <span class="chip chip-c">{x}</span>)}</dd></div>
+        <div><dt class="mono">Status</dt><dd>{m.status}</dd></div>
+        <div><dt class="mono">Error message</dt><dd><code>{m.error}</code></dd></div>
+        <div><dt class="mono">Learning</dt><dd>{m.learning}</dd></div>
+        <div><dt class="mono">Fun fact</dt><dd>{m.fact}</dd></div>
+      </dl>
+    </section>
+
+    <section class="wrap mp-skills" data-reveal>
+      <p class="eyebrow mono">Tools {m.first} reaches for</p>
+      <ul class="mp-skill-list">{m.skills.map((s, k) => <li style={`--r:${(k % 3) - 1}deg`}>{s}</li>)}</ul>
+    </section>
+
+    <section class="wrap mp-work">
+      <div class="mp-work-head" data-reveal>
+        <p class="eyebrow mono">Work</p>
+        <h2 class="sec-title">What {m.first}<br />has built.</h2>
+      </div>
+      <div class="mp-cards">
+        {work.map(({ p, kind, did }) => {
+          const href = p.links.live ?? p.links.code ?? p.links.video ?? '#';
+          return (
+            <a class="mp-card" href={href} target="_blank" rel="noopener" data-reveal style={`--c:var(--${p.color})`} data-cursor="Open">
+              <div class="mp-card-shot"><Shot p={p} /></div>
+              <div class="mp-card-info">
+                <p class="mono">{kind} · {p.year}</p>
+                <h3>{p.name}</h3>
+                <p>{p.line}</p>
+                <p class="mp-did"><b>{m.first}’s part:</b> {did}</p>
+                <span class="status" data-s={p.status}>{p.status}</span>
+              </div>
+            </a>
+          );
+        })}
+      </div>
+    </section>
+
+    <section class="wrap mp-contact" data-reveal>
+      <h2 class="sec-title">Say hi to<br />{m.first}.</h2>
+      <div class="mp-links">
+        <a class="btn btn-ink" href={`mailto:${m.email}`}><Icon name="mail" /> {m.email}</a>
+        {Object.entries(m.socials).map(([k, url]) => (
+          <a class="btn" href={url} target="_blank" rel="noopener"><Icon name={k} /> {pfName[k] ?? k}</a>
+        ))}
+      </div>
+    </section>
+
+    <nav class="mp-next" aria-label="Other members">
+      <a href={`/members/${prev.slug}`} style={`--c:var(--${prev.color})`} data-wipe={`var(--${prev.color})`} data-cursor={prev.first}>
+        <span class="mono">← Previous</span><b>{prev.first}</b>
+      </a>
+      <a href={`/members/${next.slug}`} style={`--c:var(--${next.color})`} data-wipe={`var(--${next.color})`} data-cursor={next.first}>
+        <span class="mono">Next →</span><b>{next.first}</b>
+      </a>
+    </nav>
+  </article>
+  <Footer />
+</Base>
+<script>
+  import '../../scripts/member';
+</script>
+
+<style is:global>
+  .mp-hero { position: relative; isolation: isolate; overflow: hidden; padding-top: calc(var(--bar-h) + 40px); padding-bottom: clamp(40px, 6vw, 80px); border-bottom: 1.5px solid var(--burgundy); }
+  .mp-flood { position: absolute; inset: 0; z-index: -1; background: var(--c); }
+  .mp-hero-grid { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr); gap: clamp(24px, 4vw, 64px); align-items: end; }
+  .mp-left { display: grid; gap: 18px; justify-items: start; }
+  .mp-back { padding: 8px 12px; border-radius: 99px; border: 1.5px solid var(--burgundy); background: var(--paper); }
+  .mp-name { font-weight: 900; font-stretch: 130%; text-transform: uppercase; font-size: clamp(80px, 15vw, 260px); line-height: 0.8; letter-spacing: -0.035em; margin-top: 12px; }
+  .mp-last { font-weight: 300; font-stretch: 140%; text-transform: uppercase; font-size: clamp(22px, 3vw, 44px); letter-spacing: 0.04em; line-height: 1; }
+  .mp-line { font-size: clamp(24px, 2.6vw, 40px); line-height: 1.1; max-width: 22ch; }
+  .mp-open { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .mp-open .mono { margin-right: 4px; }
+  .mp-photo-slot { position: relative; aspect-ratio: 4 / 5; }
+  .mp-photo { position: absolute; inset: 0; border: 1.5px solid var(--burgundy); border-radius: var(--radius); overflow: hidden; box-shadow: 8px 8px 0 var(--burgundy); background: var(--paper); }
+
+  .mp-about { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: clamp(32px, 6vw, 96px); padding-block: clamp(80px, 10vw, 140px); }
+  .mp-block { display: grid; gap: 18px; align-content: start; }
+  .mp-bio { font-size: clamp(22px, 2.2vw, 32px); line-height: 1.3; font-weight: 500; max-width: 34ch; }
+  .mp-facts { display: grid; border-top: 1.5px solid var(--burgundy); align-content: start; }
+  .mp-facts > div { display: grid; grid-template-columns: 130px 1fr; gap: 16px; padding-block: 16px; border-bottom: 1.5px dashed var(--line-strong); }
+  .mp-facts dt { color: var(--wine); padding-top: 3px; }
+  .mp-facts dd { display: flex; flex-wrap: wrap; gap: 6px; font-size: 17px; }
+  .mp-facts code { font-family: var(--f-mono); font-size: 15px; padding: 2px 8px; border-radius: 6px; background: var(--paper); border: 1.5px dashed var(--burgundy); }
+
+  .mp-skills { display: grid; gap: 22px; padding-bottom: clamp(80px, 10vw, 140px); }
+  .mp-skill-list { display: flex; flex-wrap: wrap; gap: 12px; }
+  .mp-skill-list li {
+    padding: 14px 22px 13px; border-radius: 99px; border: 1.5px solid var(--burgundy); background: var(--paper);
+    font-weight: 800; font-stretch: 110%; font-size: clamp(20px, 2.4vw, 36px); text-transform: uppercase;
+    rotate: var(--r); box-shadow: 4px 4px 0 var(--burgundy); transition: background-color 0.2s, rotate 0.3s var(--ease-out);
+  }
+  .mp-skill-list li:hover { background: var(--c); rotate: calc(var(--r) * -3); }
+
+  .mp-work { display: grid; gap: 40px; padding-bottom: clamp(80px, 10vw, 140px); }
+  .mp-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+  .mp-card { display: grid; grid-template-rows: auto 1fr; border: 1.5px solid var(--burgundy); border-radius: calc(var(--radius) + 4px); background: var(--paper); overflow: hidden; transition: box-shadow 0.3s var(--ease-out), translate 0.3s var(--ease-out); }
+  .mp-card:hover { translate: -3px -3px; box-shadow: 7px 7px 0 var(--burgundy); }
+  .mp-card-shot { aspect-ratio: 16 / 10; padding: 16px; background: color-mix(in srgb, var(--c) 35%, var(--paper)); border-bottom: 1.5px solid var(--burgundy); }
+  .mp-card-shot .shot { height: 100%; }
+  .mp-card-info { display: grid; gap: 8px; padding: 20px 22px 24px; align-content: start; }
+  .mp-card-info h3 { font-weight: 900; font-stretch: 105%; font-size: clamp(30px, 3vw, 46px); line-height: 0.9; text-transform: uppercase; }
+  .mp-did { font-size: 15px; color: var(--wine); }
+
+  .mp-contact { display: grid; gap: 28px; padding-bottom: clamp(80px, 10vw, 140px); }
+  .mp-links { display: flex; flex-wrap: wrap; gap: 12px; }
+
+  .mp-next { display: grid; grid-template-columns: 1fr 1fr; border-top: 1.5px solid var(--burgundy); }
+  .mp-next a { position: relative; isolation: isolate; overflow: hidden; display: grid; gap: 8px; padding: clamp(28px, 5vw, 64px) var(--gutter); }
+  .mp-next a + a { border-left: 1.5px solid var(--burgundy); text-align: right; }
+  .mp-next a::before { content: ''; position: absolute; inset: 0; z-index: -1; background: var(--c); transform: scaleY(0); transform-origin: 50% 100%; transition: transform 0.5s var(--ease-out); }
+  .mp-next a:hover::before { transform: scaleY(1); }
+  .mp-next b { font-weight: 900; font-stretch: 130%; font-size: clamp(48px, 9vw, 150px); line-height: 0.8; text-transform: uppercase; letter-spacing: -0.03em; }
+
+  @media (max-width: 860px) {
+    .mp-hero-grid, .mp-about, .mp-cards { grid-template-columns: 1fr; }
+    .mp-photo-slot { aspect-ratio: 4 / 3; order: -1; }
+    .mp-facts > div { grid-template-columns: 1fr; gap: 6px; }
+  }
+</style>

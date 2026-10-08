@@ -1,0 +1,94 @@
+---
+import { members, site } from '../data/site';
+import Cursor from './Cursor.astro';
+import Comment from './Comment.astro';
+---
+<section class="hero" id="top" data-hero>
+  <div class="hero-stage" data-stage>
+    <div class="hero-top">
+      <p class="mono" data-in>Learn2Earn fellows · {site.city}</p>
+      <p class="mono hero-top-r" data-in>Six builders · one file · zero names</p>
+    </div>
+
+    <div class="hero-mid" data-title>
+    <h1 class="hero-title">
+      <span class="sr-only">Untitled</span>
+      <span class="hero-box" data-box aria-hidden="true">
+        <span class="hero-word" data-type>Untitled</span>
+        <span class="sel hero-sel" data-sel style="--c:var(--lime)"><i></i><i></i><i></i><i></i><b data-size>Text</b></span>
+      </span>
+    </h1>
+    <p class="hand hero-scroll" data-in aria-hidden="true">scroll down, we’re still building ↓</p>
+    </div>
+
+    <div class="hero-bottom">
+      <p class="hero-tag serif" data-in>Six builders. One blank page.<br />Building everything in public.</p>
+      <div class="hero-cta" data-cta>
+        <a class="btn btn-ink" href="#public" data-cursor="Watch">Watch us build</a>
+        <a class="btn" href="#six" data-cursor="Meet">Meet the six</a>
+      </div>
+    </div>
+
+    <Comment who="kemi" text="can we PLEASE pick a name" class="hero-c1" />
+    <Comment who="femi" text="no." class="hero-c2" />
+
+    <button class="hero-skip mono" type="button" data-skip>Skip intro →</button>
+    <div class="cur-layer">{members.map((m) => <Cursor who={m.slug} />)}</div>
+  </div>
+</section>
+
+<style is:global>
+  .hero { position: relative; }
+  .hero-stage {
+    position: relative;
+    min-height: 100svh;
+    padding: calc(var(--bar-h) + env(safe-area-inset-top, 0px) + 28px) var(--gutter) 32px;
+    display: grid; grid-template-rows: auto 1fr auto; gap: 24px;
+    background-image: radial-gradient(circle at 1px 1px, var(--line-strong) 1.1px, transparent 1.4px);
+    background-size: 28px 28px;
+    background-position: -14px -14px;
+    overflow: hidden;
+  }
+  .hero-top { display: flex; justify-content: space-between; gap: 16px; color: var(--wine); }
+  .hero-mid { align-self: center; display: grid; justify-items: center; gap: clamp(14px, 2vw, 28px); position: relative; z-index: 3; }
+  .hero-title { display: grid; place-items: center; }
+  .hero-box { position: relative; display: inline-block; padding: 0 0.04em; }
+  .hero-word {
+    --w: 118;
+    display: block;
+    font-weight: 900;
+    font-stretch: calc(var(--w) * 1%);
+    font-size: clamp(64px, 15.4vw, 300px);
+    line-height: 0.8;
+    letter-spacing: -0.035em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    padding-top: 0.06em;
+    --caret: var(--lime);
+  }
+  .hero-sel { inset: -10px -14px -6px -14px; }
+  .hero-bottom { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; flex-wrap: wrap; position: relative; z-index: 3; }
+  .hero-tag { font-size: clamp(24px, 3vw, 44px); line-height: 1.08; }
+  .hero-cta { display: flex; gap: 14px; flex-wrap: wrap; }
+  .hero-scroll { justify-self: end; margin-right: 4%; transform: rotate(-3deg); white-space: nowrap; }
+  .hero-c1 { right: 9%; top: 24%; }
+  .hero-c2 { right: 6%; top: calc(24% + 66px); }
+  .js .hero .cmt { opacity: 0; }
+  .hero-skip {
+    position: absolute; left: 50%; top: calc(var(--bar-h) + env(safe-area-inset-top, 0px) + 20px); transform: translateX(-50%); z-index: 50;
+    padding: 8px 12px; border-radius: 99px; border: 1.5px solid var(--burgundy); background: var(--paper);
+    opacity: 0; pointer-events: none; transition: opacity 0.3s;
+  }
+  .is-intro .hero-skip { opacity: 1; pointer-events: auto; }
+
+  @media (max-width: 860px) {
+    .hero-scroll { justify-self: center; margin-right: 0; }
+    .hero-c1 { right: 4%; top: 20%; }
+    .hero-c2 { right: 3%; top: calc(20% + 62px); }
+  }
+  @media (max-width: 560px) {
+    .hero-top-r { display: none; }
+    .hero-word { font-size: 15vw; }
+    .hero-cta .btn { padding: 14px 18px 13px; font-size: 15px; }
+  }
+</style>

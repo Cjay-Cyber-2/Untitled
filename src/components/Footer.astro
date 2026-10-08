@@ -1,0 +1,65 @@
+---
+import { members, site } from '../data/site';
+import Icon from './Icon.astro';
+interface Props { home?: boolean }
+const { home = false } = Astro.props;
+const base = home ? '' : '/';
+const letters = 'UNTITLED'.split('');
+---
+<footer class="ft" data-footer>
+  <div class="wrap ft-grid">
+    <div class="ft-col">
+      <p class="mono ft-h">The site</p>
+      <a href={`${base}#about`}>Who we are</a>
+      <a href={`${base}#six`}>The six</a>
+      <a href={`${base}#together`}>Built together</a>
+      <a href={`${base}#alone`}>Built alone</a>
+      <a href={`${base}#public`}>In public</a>
+      <a href={`${base}#name`}>Name us</a>
+    </div>
+    <div class="ft-col">
+      <p class="mono ft-h">The six</p>
+      {members.map((m) => <a href={`/members/${m.slug}`} data-wipe={`var(--${m.color})`} style={`--c:var(--${m.color})`}><i class="ft-dot" />{m.first}</a>)}
+    </div>
+    <div class="ft-col">
+      <p class="mono ft-h">Follow</p>
+      {site.socials.map((s) => <a href={s.url} target="_blank" rel="noopener"><Icon name={s.platform} class="ft-ico" />{s.handle}</a>)}
+    </div>
+    <div class="ft-col ft-meta">
+      <p class="mono ft-h">Status</p>
+      <p>Lagos time <b data-clock>--:--</b></p>
+      <p>Currently building: <b>this website</b></p>
+      <p>Name status: <b>still pending</b></p>
+      <button type="button" class="btn ft-top" data-top data-cursor="Top">Back to top ↑</button>
+    </div>
+  </div>
+  <div class="ft-word" data-word aria-hidden="true">
+    {letters.map((l) => <span>{l}</span>)}
+  </div>
+  <div class="wrap ft-fine mono">
+    <span>© {new Date().getFullYear()} Untitled · Learn2Earn fellows</span>
+    <span>Built by six people and a lot of Ctrl+Z</span>
+  </div>
+</footer>
+<style is:global>
+  .ft { position: relative; padding-top: clamp(60px, 8vw, 110px); border-top: 1.5px solid var(--burgundy); background: var(--paper); overflow: hidden; }
+  .ft-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 32px; }
+  .ft-col { display: grid; gap: 8px; align-content: start; justify-items: start; }
+  .ft-h { color: var(--wine); margin-bottom: 6px; }
+  .ft-col a { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; position: relative; }
+  .ft-col a::after { content: ''; position: absolute; left: 0; right: 0; bottom: -2px; height: 2px; background: var(--burgundy); transform: scaleX(0); transform-origin: 0 50%; transition: transform 0.3s var(--ease-out); }
+  .ft-col a:hover::after { transform: scaleX(1); }
+  .ft-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--c); border: 1.5px solid var(--burgundy); }
+  .ft-ico { width: 16px; height: 16px; }
+  .ft-meta p { font-size: 15px; }
+  .ft-top { margin-top: 12px; padding: 12px 18px 11px; font-size: 14px; }
+  .ft-word {
+    display: flex; justify-content: center; align-items: flex-end;
+    margin-top: clamp(40px, 6vw, 80px); line-height: 0.74; user-select: none;
+    font-weight: 900; text-transform: uppercase; font-size: clamp(64px, 16.5vw, 300px); letter-spacing: -0.03em;
+  }
+  .ft-word span { --w: 100; font-stretch: calc(var(--w) * 1%); transition: font-stretch 0.5s var(--ease-out), color 0.3s; }
+  .ft-word span:hover { color: var(--wine); }
+  .ft-fine { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding-block: 18px 24px; font-size: 10px; color: var(--wine); border-top: 1.5px solid var(--burgundy); }
+  @media (max-width: 860px) { .ft-grid { grid-template-columns: 1fr 1fr; } }
+</style>

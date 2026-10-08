@@ -1,0 +1,93 @@
+---
+import { soloProjects, members, memberBySlug } from '../data/site';
+import Cursor from './Cursor.astro';
+import Shot from './Shot.astro';
+---
+<section class="alone" id="alone" data-alone>
+  <div class="wrap sec-head">
+    <p class="eyebrow mono" style="--c:var(--blush)">04 · Built alone</p>
+    <h2 class="sec-title">Built<br />alone.</h2>
+    <p class="sec-sub">What each of us makes at 2am when nobody is watching. Filter by person.</p>
+  </div>
+
+  <div class="wrap">
+    <div class="al-filters" role="group" aria-label="Filter projects by person" data-filters>
+      <button type="button" class="chip al-f is-on" data-f="all" aria-pressed="true">Everyone <sup>{soloProjects.length}</sup></button>
+      {members.map((m) => (
+        <button type="button" class="chip al-f" data-f={m.slug} style={`--c:var(--${m.color})`} aria-pressed="false">
+          {m.first} <sup>{soloProjects.filter((p) => p.team[0].who === m.slug).length}</sup>
+        </button>
+      ))}
+    </div>
+
+    <div class="al-table" role="table" aria-label="Solo projects">
+      <div class="al-row al-head mono" role="row">
+        <span role="columnheader">No.</span><span role="columnheader">Project</span><span role="columnheader">Builder</span><span role="columnheader">Stack</span><span role="columnheader">Status</span>
+      </div>
+      {soloProjects.map((p, i) => {
+        const m = memberBySlug(p.team[0].who);
+        const href = p.links.live ?? p.links.code ?? p.links.video ?? `/members/${m.slug}`;
+        return (
+          <a class="al-row" role="row" href={href} data-row data-owner={m.slug} data-preview={i} style={`--c:var(--${m.color})`} data-cursor={`by ${m.first}`}>
+            <span class="al-no mono" role="cell">{String(i + 1).padStart(2, '0')}</span>
+            <span class="al-name" role="cell"><b>{p.name}</b><em>{p.line}</em></span>
+            <span class="al-who" role="cell"><i></i>{m.first}</span>
+            <span class="al-stack mono" role="cell">{p.stack.join(' · ')}</span>
+            <span class="al-status" role="cell"><span class="status" data-s={p.status}>{p.status}</span></span>
+            <span class="al-ink" aria-hidden="true"></span>
+            <span class="al-cover" aria-hidden="true"></span>
+            <Cursor who={m.slug} />
+          </a>
+        );
+      })}
+    </div>
+  </div>
+
+  <div class="al-preview" data-previewer aria-hidden="true">
+    {soloProjects.map((p) => <div class="al-pv"><Shot p={p} /></div>)}
+  </div>
+</section>
+
+<style is:global>
+  .al-filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 28px; }
+  .al-f { padding: 9px 14px; font-size: 13px; transition: background-color 0.2s, translate 0.2s var(--ease-out); }
+  .al-f sup { font-size: 9px; margin-left: 2px; }
+  .al-f:hover { translate: 0 -2px; }
+  .al-f.is-on { background: var(--c, var(--burgundy)); box-shadow: 3px 3px 0 var(--burgundy); }
+  .al-f[data-f='all'].is-on { color: var(--paper); }
+
+  .al-table { border-top: 1.5px solid var(--burgundy); }
+  .al-row {
+    position: relative; isolation: isolate;
+    display: grid; grid-template-columns: 56px minmax(0, 2.4fr) minmax(0, 0.9fr) minmax(0, 1.3fr) 140px;
+    gap: 20px; align-items: center;
+    padding: 22px 12px; border-bottom: 1.5px solid var(--line-strong);
+  }
+  .al-head { padding-block: 12px; color: var(--wine); border-bottom-color: var(--burgundy); }
+  .al-ink { position: absolute; inset: 0; z-index: -1; background: var(--c); transform: scaleX(0); transform-origin: 0 50%; transition: transform 0.45s var(--ease-out); }
+  a.al-row:hover .al-ink, a.al-row:focus-visible .al-ink { transform: scaleX(1); }
+  .al-name { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .al-name b { font-weight: 800; font-stretch: 90%; font-size: clamp(22px, 2.4vw, 36px); line-height: 1; text-transform: uppercase; letter-spacing: -0.01em; transition: translate 0.4s var(--ease-out); }
+  a.al-row:hover .al-name b { translate: 10px 0; }
+  .al-name em { font-style: normal; font-size: 15px; color: var(--wine); }
+  .al-who { display: flex; align-items: center; gap: 8px; font-weight: 600; }
+  .al-who i { width: 12px; height: 12px; border-radius: 50%; background: var(--c); border: 1.5px solid var(--burgundy); }
+  .al-stack { font-size: 11px; color: var(--wine); }
+  .al-row .cur { opacity: 0; z-index: 3; }
+  .al-cover { position: absolute; inset: 0 0 -2px; z-index: 2; background: var(--bone); transform-origin: 100% 50%; transform: scaleX(0); pointer-events: none; }
+  .al-row.is-hidden { display: none; }
+
+  .al-preview { position: fixed; left: 0; top: 0; z-index: 70; width: 340px; aspect-ratio: 16 / 11; pointer-events: none; opacity: 0; transform: scale(0.8); }
+  .al-pv { position: absolute; inset: 0; opacity: 0; }
+  .al-pv .shot { height: 100%; box-shadow: 6px 6px 0 var(--burgundy); }
+  .al-pv.is-on { opacity: 1; }
+
+  @media (max-width: 860px) {
+    .al-row { grid-template-columns: 34px minmax(0, 1fr) auto; gap: 6px 12px; padding: 18px 6px; }
+    .al-head { display: none; }
+    .al-stack { grid-column: 2 / -1; }
+    .al-status { grid-column: 2 / -1; }
+    .al-who { grid-column: 3; grid-row: 1; }
+    .al-preview { display: none; }
+  }
+</style>

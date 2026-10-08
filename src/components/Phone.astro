@@ -1,0 +1,72 @@
+---
+import type { Drop } from '../data/site';
+import { memberBySlug, site } from '../data/site';
+import Icon from './Icon.astro';
+interface Props { drop: Drop; mode?: 'feed' | 'upload'; class?: string }
+const { drop, mode = 'feed', class: cls = '' } = Astro.props;
+const color = drop.who === 'all' ? 'lime' : memberBySlug(drop.who).color;
+const handle = site.socials.find((s) => s.platform === drop.platform)?.handle ?? '@untitled';
+---
+<div class={`phone ${cls}`} style={`--c:var(--${color})`}>
+  <div class="phone-screen">
+    {mode === 'feed' ? (
+      <div class="ph-feed">
+        <div class="ph-thumb">
+          {drop.thumb ? <img src={drop.thumb} alt="" loading="lazy" /> : <span class="ph-thumb-title">{drop.title}</span>}
+          <span class="ph-play"><Icon name="play" /></span>
+        </div>
+        <div class="ph-side" aria-hidden="true"><i>♥<small>12K</small></i><i>✎<small>480</small></i><i>↗<small>Share</small></i></div>
+        <div class="ph-cap"><b>{handle}</b><span>{drop.title}</span></div>
+      </div>
+    ) : (
+      <div class="ph-upload">
+        <p class="ph-head mono">New post</p>
+        <div class="ph-thumb ph-thumb-sm">
+          {drop.thumb ? <img src={drop.thumb} alt="" loading="lazy" /> : <span class="ph-thumb-title">{drop.title}</span>}
+        </div>
+        <p class="ph-caption">{drop.title} 🫠 <span>#buildinpublic #learn2earn</span></p>
+        <div class="ph-bar"><i data-upbar></i></div>
+        <p class="ph-share mono" aria-hidden="true">Share to: YouTube · TikTok · IG · X</p>
+        <span class="ph-post" data-post><b data-post-a>Post</b><b data-post-b>Posted ✓</b></span>
+      </div>
+    )}
+  </div>
+</div>
+<style is:global>
+  .phone {
+    position: relative; width: 100%; aspect-ratio: 9 / 18.5;
+    border: 1.5px solid var(--burgundy); border-radius: 38px; padding: 10px;
+    background: var(--paper); box-shadow: 6px 6px 0 var(--burgundy);
+  }
+  .phone::before { content: ''; position: absolute; left: 50%; top: 16px; width: 64px; height: 16px; transform: translateX(-50%); border-radius: 99px; background: var(--burgundy); z-index: 3; }
+  .phone-screen { position: relative; height: 100%; border-radius: 28px; overflow: hidden; background: var(--bone); border: 1.5px solid var(--burgundy); }
+  .ph-feed { position: absolute; inset: 0; }
+  .ph-thumb {
+    position: absolute; inset: 0; display: grid; place-items: center; padding: 18%;
+    background: radial-gradient(90% 60% at 30% 25%, color-mix(in srgb, var(--paper) 60%, transparent), transparent 70%), var(--c);
+  }
+  .ph-thumb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .ph-thumb-title { font-weight: 900; font-stretch: 80%; text-transform: uppercase; font-size: clamp(18px, 2.2vw, 30px); line-height: 0.9; text-align: center; text-wrap: balance; }
+  .ph-play { position: absolute; left: 50%; top: 62%; transform: translate(-50%, -50%); width: 46px; height: 46px; border-radius: 50%; background: var(--paper); border: 1.5px solid var(--burgundy); display: grid; place-items: center; }
+  .ph-play svg { width: 18px; height: 18px; margin-left: 2px; }
+  .ph-side { position: absolute; right: 8px; bottom: 26%; display: grid; gap: 12px; }
+  .ph-side i { width: 36px; height: 36px; border-radius: 50%; background: var(--paper); border: 1.5px solid var(--burgundy); display: grid; place-items: center; font-style: normal; font-size: 14px; position: relative; }
+  .ph-side small { position: absolute; top: 100%; font-family: var(--f-mono); font-size: 9px; }
+  .ph-cap { position: absolute; left: 10px; right: 54px; bottom: 14px; display: grid; gap: 2px; padding: 8px 10px; border-radius: 12px; background: var(--paper); border: 1.5px solid var(--burgundy); font-size: 12px; line-height: 1.25; }
+  .ph-cap b { font-family: var(--f-mono); font-size: 10px; }
+  .ph-upload { position: absolute; inset: 0; padding: 44px 14px 16px; display: flex; flex-direction: column; gap: 12px; }
+  .ph-head { text-align: center; }
+  .ph-thumb-sm { position: relative; inset: auto; aspect-ratio: 4 / 5; border-radius: 16px; border: 1.5px solid var(--burgundy); padding: 12%; }
+  .ph-caption { font-size: 13px; line-height: 1.35; font-weight: 600; }
+  .ph-caption span { color: var(--wine); font-weight: 400; }
+  .ph-bar { height: 8px; border-radius: 99px; border: 1.5px solid var(--burgundy); overflow: hidden; background: var(--paper); }
+  .ph-bar i { display: block; height: 100%; width: 100%; background: var(--burgundy); transform-origin: 0 50%; transform: scaleX(0); }
+  .ph-share { font-size: 9px; color: var(--wine); text-align: center; }
+  .ph-post {
+    position: relative; display: grid; margin-top: auto; height: 46px; border-radius: 99px; overflow: hidden;
+    border: 1.5px solid var(--burgundy); background: var(--lime); box-shadow: 3px 3px 0 var(--burgundy);
+    font-weight: 800; font-stretch: 115%; font-size: 16px;
+  }
+  .ph-post b { grid-area: 1 / 1; display: grid; place-items: center; }
+  .ph-post [data-post-b] { background: var(--burgundy); color: var(--paper); opacity: 0; }
+</style>
